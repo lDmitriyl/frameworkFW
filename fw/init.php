@@ -1,5 +1,9 @@
 <?php
 
+use fw\core\Application;
+
+define('CORE_ACCESS', true);
+
 session_start();
 
 function autoloadClasses($class_name){
@@ -12,3 +16,5 @@ function autoloadClasses($class_name){
 }
 
 spl_autoload_register('autoloadClasses');
+
+$app = Application::instance();

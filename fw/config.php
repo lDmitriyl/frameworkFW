@@ -5,4 +5,7 @@ return  [
         'login' => 'mysql',
         'password' => '123'
     ],
+    'template' => [
+        'id' => 'main'
+    ]
 ];
