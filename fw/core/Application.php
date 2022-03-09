@@ -4,31 +4,60 @@ namespace fw\core;
 
 class Application{
 
+    use singleton;
+
     private $__components = [];
-    private $pager =  null;
+    private $pager;
     private $template = null;
 
-    private static $_instance = null;
-    
     private function __construct()
     {
+        $this->pager = Page::instance();
     }
 
-    public static function instance()
+    public function header()
     {
-        if (is_null(self::$_instance))
-            self::$_instance = new self;
+        $this->startBuffer();
 
-        return self::$_instance;
+        $this->includeTemplate('header.php');
     }
 
-    private function __clone()
+    public function footer()
     {
+        $this->includeTemplate('footer.php');
+
+        $this->endBuffer();
     }
 
-    private function __wakeup()
+    public function startBuffer()
     {
+        ob_start();
     }
 
+    public function endBuffer()
+    {
+        $arrMacros = $this->pager->getAllReplace();
+
+        echo str_replace(array_keys($arrMacros), array_values($arrMacros) , ob_get_clean());
+    }
+
+    public function restartBuffer()
+    {
+        ob_clean();
+    }
+
+    protected function includeTemplate($file){
+
+        if(file_exists($_SERVER['DOCUMENT_ROOT']. '/fw/templates/'. Config::get('template/id/') . '/' . $file))
+            include_once $_SERVER['DOCUMENT_ROOT']. '/fw/templates/'. Config::get('template/id/') . '/' . $file;
+        else
+            throw new \Exception('Отсутствует шаблон - ' . Config::get('template/id/') . '/' . $file);
+
+    }
+
+    public function getPager()
+    {
+        return $this->pager;
+    }
 }
 
